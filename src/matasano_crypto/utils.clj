@@ -1,8 +1,11 @@
-(ns matasano-crypto.utils)
-
+(ns matasano-crypto.utils
+  (:require [matasano-crypto.types :as types]
+            [clojure.spec.alpha :as spec]))
 
 (defn print-bits
   [b]
+  {:pre [(spec/valid? ::types/byte b)]
+   :post [(spec/valid? string? %)]}
   (let [bits (->> (range 8)
                   (map #(bit-test b %))
                   (reverse)
@@ -10,9 +13,11 @@
                   (apply str))]
     bits))
 
+
 (defn read-hex-char
   [c]
   (byte (Integer/parseInt (str c) 16)))
+
 
 (defn read-hex-string
   [s]
