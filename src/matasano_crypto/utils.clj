@@ -4,7 +4,7 @@
 
 
 (defn byte-string
-  ;; TODO - complete tests and add some documentation
+  "Takes a byte and returns its string representation, useful for inspection and printing."
   [b]
   {:pre [(spec/valid? ::types/byte b)]
    :post [(spec/valid? ::types/byte-string %)]}
@@ -16,8 +16,10 @@
 
 
 (defn read-hex-char
-  ;; TODO - complete tests and add some documentation
+  "Takes a hex character and returns the corresponding byte."
   [c]
+  {:pre [(spec/valid? char? c)]
+   :post [(spec/valid? ::types/byte %)]}
   (byte (Integer/parseInt (str c) 16)))
 
 

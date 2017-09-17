@@ -9,3 +9,17 @@
 
   (testing "it throws an assertion error when not given a byte"
     (is (thrown? java.lang.AssertionError (utils/byte-string "42")))))
+
+
+(deftest test-read-hex-char
+  (testing "it returns a byte corresponding to the hex character"
+    (is (= (byte 15) (utils/read-hex-char \F))))
+
+  (testing "it is case insensitive"
+    (is (= (byte 10) (utils/read-hex-char \a))))
+
+  (testing "it throws a number format exception when the char is not valid"
+    (is (thrown? java.lang.NumberFormatException (utils/read-hex-char \k))))
+
+  (testing "it throws an assertion error when not given a char"
+    (is (thrown? java.lang.AssertionError (utils/read-hex-char "4")))))
