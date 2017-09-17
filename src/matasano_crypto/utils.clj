@@ -27,5 +27,5 @@
   "Takes a hex string and returns the corresponding collection of bytes."
   [s]
   {:pre [(spec/valid? string? s)]
-   :post [(spec/valid? (spec/coll-of ::types/byte) %)]}
+   :post [(spec/valid? ::types/bytes %)]}
   (map read-hex-char (seq s)))
