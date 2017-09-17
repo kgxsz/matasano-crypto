@@ -24,6 +24,8 @@
 
 
 (defn read-hex-string
-  ;; TODO - complete tests and add some documentation
+  "Takes a hex string and returns the corresponding collection of bytes."
   [s]
+  {:pre [(spec/valid? string? s)]
+   :post [(spec/valid? (spec/coll-of ::types/byte) %)]}
   (map read-hex-char (seq s)))
