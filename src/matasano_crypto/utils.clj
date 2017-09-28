@@ -23,14 +23,6 @@
   (apply str (map byte-to-string bs)))
 
 
-(defn read-hex-char
-  "Takes a hex character and returns the corresponding decimal integer."
-  [c]
-  {:pre [(spec/valid? char? c)]
-   :post [(spec/valid? int? %)]}
-  (Integer/parseInt (str c) 16))
-
-
 (defn read-partitioned-hex-string
   "Takes a partitioned hex string consisting of two hex characters and returns the corresponding byte."
   [s]
@@ -42,7 +34,7 @@
 
 
 (defn read-hex-string
-  "Takes a hex string and returns the corresponding collection of bytes."
+  "Takes a hex string and returns the corresponding byte-array."
   [cs]
   {:pre [(spec/valid? string? cs)]
    :post [(spec/valid? ::types/bytes %)]}
