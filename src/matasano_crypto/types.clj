@@ -1,8 +1,10 @@
 (ns matasano-crypto.types
   (:require [clojure.spec.alpha :as spec]))
 
+(def binary-string-regex #"^[0|1]+$")
+
 (spec/def ::byte (partial instance? java.lang.Byte))
 
-(spec/def ::bytes (spec/coll-of ::byte))
+(spec/def ::bytes (partial instance? (Class/forName "[B")))
 
-(spec/def ::byte-string (spec/and string? #(= 8 (count %))))
+(spec/def ::binary-string (spec/and string? (partial re-matches binary-string-regex)))
