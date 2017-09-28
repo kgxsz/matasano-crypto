@@ -19,21 +19,29 @@
     (is (thrown? java.lang.AssertionError (utils/bytes-to-string "42")))))
 
 
-(deftest test-read-hex-char
-  (testing "it returns a byte corresponding to the hex character"
-    (is (= (byte 15) (utils/read-hex-char \F))))
+(deftest test-read-partitioned-hex-string
+  (testing "it returns a byte corresponding to the hex string"
+    (is (= (byte 127) (utils/read-partitioned-hex-string "7F"))))
+
+  (testing "it uses the full byte and ignores two's compliment"
+    (is (= (byte -1) (utils/read-partitioned-hex-string "FF"))))
 
   (testing "it is case insensitive"
-    (is (= (byte 10) (utils/read-hex-char \a))))
+    (is (= (byte -113) (utils/read-partitioned-hex-string "8f"))))
 
-  (testing "it throws a number format exception when the char is not valid"
-    (is (thrown? java.lang.NumberFormatException (utils/read-hex-char \k))))
+  (testing "it throws an assertion error when the input is not a string"
+    (is (thrown? java.lang.AssertionError (utils/read-partitioned-hex-string 42))))
 
-  (testing "it throws an assertion error when not given a char"
-    (is (thrown? java.lang.AssertionError (utils/read-hex-char "4")))))
+  (testing "it throws an assertion error when the input is not a string of length two"
+    (is (thrown? java.lang.AssertionError (utils/read-partitioned-hex-string "0")))
+    (is (thrown? java.lang.AssertionError (utils/read-partitioned-hex-string "000"))))
+
+  (testing "it throws an assertion error when the input contains invalid hex"
+    (is (thrown? java.lang.AssertionError (utils/read-partitioned-hex-string "000")))
+    (is (thrown? java.lang.AssertionError (utils/read-partitioned-hex-string "0G")))))
 
 
-(deftest test-read-hex-string
+#_(deftest test-read-hex-string
   (testing "it returns a collection of bytes corresponding to the hex string"
     (is (= (vec (byte-array [(byte 15) (byte 5)])) (vec (utils/read-hex-string "F5")))))
 

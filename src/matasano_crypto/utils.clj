@@ -31,6 +31,16 @@
   (Integer/parseInt (str c) 16))
 
 
+(defn read-partitioned-hex-string
+  "Takes a partitioned hex string consisting of two hex characters and returns the corresponding byte."
+  [s]
+  {:pre [(spec/valid? ::types/partitioned-hex-string s)]
+   :post [(spec/valid? ::types/byte %)]}
+  (let [value (Integer/parseInt s 16)
+        shifted-value (cond-> value (> value 127) (- 256))]
+    (byte shifted-value)))
+
+
 (defn read-hex-string
   "Takes a hex string and returns the corresponding collection of bytes."
   [cs]
