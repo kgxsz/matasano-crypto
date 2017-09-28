@@ -27,7 +27,7 @@
     (is (= (byte -1) (utils/read-partitioned-hex-string "FF"))))
 
   (testing "it is case insensitive"
-    (is (= (byte -113) (utils/read-partitioned-hex-string "8f"))))
+    (is (= (byte -1) (utils/read-partitioned-hex-string "Ff"))))
 
   (testing "it throws an assertion error when the input is not a string"
     (is (thrown? java.lang.AssertionError (utils/read-partitioned-hex-string 42))))
@@ -41,11 +41,11 @@
     (is (thrown? java.lang.AssertionError (utils/read-partitioned-hex-string "0G")))))
 
 
-#_(deftest test-read-hex-string
-  (testing "it returns a collection of bytes corresponding to the hex string"
-    (is (= (vec (byte-array [(byte 15) (byte 5)])) (vec (utils/read-hex-string "F5")))))
+(deftest test-read-even-hex-string
+  (testing "it returns a byte-array corresponding to the hex string"
+    (is (= (vec (byte-array [(byte 73) (byte 39) (byte 109)])) (vec (utils/read-even-hex-string "49276d")))))
 
-  (testing "it throws an assertion error when not given a string"
-    (is (thrown? java.lang.AssertionError (utils/read-hex-string 5)))))
+  (testing  "it throws an assertion error when the input is not a string"
+    (is (thrown? java.lang.AssertionError (utils/read-even-hex-string 5)))))
 
 

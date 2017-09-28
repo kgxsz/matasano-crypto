@@ -13,4 +13,4 @@
 
 (spec/def ::even-hex-string (spec/and string? (partial re-matches hex-string-regex) (comp even? count)))
 
-(spec/def ::partitioned-hex-string (spec/and string? (partial re-matches hex-string-regex #(= 2 (count %)))))
+(spec/def ::partitioned-hex-string (spec/and string? (partial re-matches hex-string-regex) #(= 2 (count %))))

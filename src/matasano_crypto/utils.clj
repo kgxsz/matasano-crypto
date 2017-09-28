@@ -33,11 +33,13 @@
     (byte shifted-value)))
 
 
-(defn read-hex-string
-  "Takes a hex string and returns the corresponding byte-array."
-  [cs]
-  {:pre [(spec/valid? string? cs)]
+(defn read-even-hex-string
+  "Takes a hex string and returns the corresponding byte-array.
+   The hex string must have an even length."
+  [s]
+  {:pre [(spec/valid? ::types/even-hex-string s)]
    :post [(spec/valid? ::types/bytes %)]}
-  (->> (seq cs)
-       (map (comp byte read-hex-char))
+  (->> (partition 2 s)
+       (map (partial apply str))
+       (map read-partitioned-hex-string)
        (byte-array)))
