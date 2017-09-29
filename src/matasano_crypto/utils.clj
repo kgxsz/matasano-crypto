@@ -50,15 +50,15 @@
   [bs]
   {:pre [(spec/valid? ::types/bytes bs)]
    :post [(spec/valid? ::types/even-hex-string %)]}
-  (let [index "0123456789abcdef"
-        octet-to-quartets (fn [octet]
+  (let [octet-to-quartets (fn [octet]
                             (let [quartet-a (bit-and (bit-shift-right octet 4) 15)
                                   quartet-b (bit-and 15 octet)]
-                              [quartet-a quartet-b]))]
+                              [quartet-a quartet-b]))
+        quartet-to-hex (fn [quartet] (get "0123456789abcdef" quartet))]
     (->> (vec bs)
          (map octet-to-quartets)
          (flatten)
-         (map (partial get index))
+         (map quartet-to-hex)
          (apply str))))
 
 
@@ -67,8 +67,7 @@
   [bs]
   {:pre [(spec/valid? ::types/bytes bs)]
    :post [(spec/valid? ::types/base64-string %)]}
-  (let [index "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-        octets-to-sextets (fn [octets]
+  (let [octets-to-sextets (fn [octets]
                             (let [octet-a (nth octets 0)
                                   octet-b (nth octets 1 (byte 0))
                                   octet-c (nth octets 2 (byte 0))
@@ -79,6 +78,7 @@
                                                    (bit-shift-right octet-c 6))
                                   sextet-d (bit-and octet-c 63)]
                               [sextet-a sextet-b sextet-c sextet-d]))
+        sextet-to-base64 (fn [sextet] (get "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/" sextet))
         pad (fn [cs]
               (case (mod (count bs) 3)
                 0 cs
@@ -87,6 +87,6 @@
     (->> (partition-all 3 bs)
          (map octets-to-sextets)
          (flatten)
-         (map (partial get index))
+         (map sextet-to-base64)
          (pad)
          (apply str))))
