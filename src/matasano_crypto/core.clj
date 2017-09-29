@@ -8,5 +8,4 @@
 
 (defn challenge-two
   [s1 s2]
-  "746865206b696420646f6e277420706c6179"
-  )
+  (utils/write-hex-string (utils/fixed-XOR (utils/read-even-hex-string s1) (utils/read-even-hex-string s2))))
