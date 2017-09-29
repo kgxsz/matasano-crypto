@@ -77,6 +77,13 @@
 
 
 (deftest test-fixed-XOR
-  (testing "it returns a byte-array which is the result of XOR operations on corresponding input bytes"
+  (testing "it returns an XOR'd byte-array when given two equal length byte-arrays"
     (is (= (vec (byte-array [(byte -1) (byte 15)]))
-           (vec (utils/fixed-XOR (byte-array [(byte -16) (byte -1)]) (byte-array [(byte 15) (byte -16)])))))))
+           (vec (utils/fixed-XOR (byte-array [(byte -16) (byte -1)]) (byte-array [(byte 15) (byte -16)]))))))
+
+  (testing "it throws an assertion error when either of the inputs are not byte-arrays"
+    (is (thrown? java.lang.AssertionError (utils/fixed-XOR (byte-array []) 42)))
+    (is (thrown? java.lang.AssertionError (utils/fixed-XOR 42 (byte-array [])))))
+
+  (testing "it throws an assertion error when the input byte-arrays are not equal length"
+    (is (thrown? java.lang.AssertionError (utils/fixed-XOR (byte-array [(byte -16)]) (byte-array [(byte 15) (byte -16)]))))))

@@ -102,5 +102,3 @@
   (->> (map (partial bit-xor) bs1 bs2)
        (map byte)
        (byte-array)))
-
-(vec (fixed-XOR (byte-array [(byte -16) (byte -1)]) (byte-array [(byte 15) (byte -16)])))
