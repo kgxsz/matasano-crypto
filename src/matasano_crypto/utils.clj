@@ -45,6 +45,23 @@
        (byte-array)))
 
 
+(defn write-hex-string
+  "Takes a byte-array and returns the hex string representation"
+  [bs]
+  {:pre [(spec/valid? ::types/bytes bs)]
+   :post [(spec/valid? ::types/even-hex-string %)]}
+  (let [index "0123456789abcdef"
+        octet-to-quartets (fn [octet]
+                            (let [quartet-a (bit-and (bit-shift-right octet 4) 15)
+                                  quartet-b (bit-and 15 octet)]
+                              [quartet-a quartet-b]))]
+    (->> (vec bs)
+         (map octet-to-quartets)
+         (flatten)
+         (map (partial get index))
+         (apply str))))
+
+
 (defn write-base64-string
   "Takes a byte-array and returns the base64 string representation"
   [bs]
@@ -73,5 +90,3 @@
          (map (partial get index))
          (pad)
          (apply str))))
-
-(write-base64-string (byte-array [(byte 77) (byte 97) (byte 110) (byte 1) (byte 1)]))

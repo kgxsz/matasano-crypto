@@ -49,6 +49,14 @@
     (is (thrown? java.lang.AssertionError (utils/read-even-hex-string 5)))))
 
 
+(deftest test-write-hex-string
+  (testing "it returns a hex string when given a byte-array"
+    (is (= "807f01" (utils/write-hex-string (byte-array [(byte -128) (byte 127) (byte 1)])))))
+
+  (testing  "it throws an assertion error when the input is not a string"
+    (is (thrown? java.lang.AssertionError (utils/write-hex-string 5)))))
+
+
 (deftest test-write-base64-string
   (testing "it returns a base64 string when given a byte-array"
     (is (= "TWFu" (utils/write-base64-string (byte-array [(byte 77) (byte 97) (byte 110)])))))
