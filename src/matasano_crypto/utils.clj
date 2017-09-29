@@ -43,3 +43,35 @@
        (map (partial apply str))
        (map read-partitioned-hex-string)
        (byte-array)))
+
+
+(defn write-base64-string
+  "Takes a byte-array and returns the base64 string representation"
+  [bs]
+  {:pre [(spec/valid? ::types/bytes bs)]
+   :post [(spec/valid? ::types/base64-string %)]}
+  (let [index "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+        octets-to-sextets (fn [octets]
+                            (let [octet-a (nth octets 0)
+                                  octet-b (nth octets 1 (byte 0))
+                                  octet-c (nth octets 2 (byte 0))
+                                  sextet-a (bit-shift-right octet-a 2)
+                                  sextet-b (bit-or (bit-shift-left (bit-and octet-a 3) 4)
+                                                   (bit-shift-right octet-b 4))
+                                  sextet-c (bit-or (bit-shift-left (bit-and octet-b 15) 2)
+                                                   (bit-shift-right octet-c 6))
+                                  sextet-d (bit-and octet-c 63)]
+                              [sextet-a sextet-b sextet-c sextet-d]))
+        pad (fn [cs]
+              (case (mod (count bs) 3)
+                0 cs
+                1 (concat (drop-last 2 cs) (repeat 2 \=))
+                2 (concat (drop-last cs) [\=])))]
+    (->> (partition-all 3 bs)
+         (map octets-to-sextets)
+         (flatten)
+         (map (partial get index))
+         (pad)
+         (apply str))))
+
+(write-base64-string (byte-array [(byte 77) (byte 97) (byte 110) (byte 1) (byte 1)]))

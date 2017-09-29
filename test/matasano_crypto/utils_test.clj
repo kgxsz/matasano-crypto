@@ -12,10 +12,10 @@
 
 
 (deftest test-bytes-to-string
-  (testing "it returns a binary string when given an array of bytes"
+  (testing "it returns a binary string when given a byte-array"
     (is (= "0010101000000001" (utils/bytes-to-string (byte-array [(byte 42) (byte 1)])))))
 
-  (testing "it throws an assertion error when not given an array of bytes"
+  (testing "it throws an assertion error when not given a byte-array"
     (is (thrown? java.lang.AssertionError (utils/bytes-to-string "42")))))
 
 
@@ -49,3 +49,14 @@
     (is (thrown? java.lang.AssertionError (utils/read-even-hex-string 5)))))
 
 
+(deftest test-write-base64-string
+  (testing "it returns a base64 string when given a byte-array"
+    (is (= "TWFu" (utils/write-base64-string (byte-array [(byte 77) (byte 97) (byte 110)])))))
+
+  (testing "it adds padding appropriately"
+    (is (= "TWFuAQ==" (utils/write-base64-string (byte-array [(byte 77) (byte 97) (byte 110) (byte 1)]))))
+    (is (= "TWFuAQE=" (utils/write-base64-string (byte-array [(byte 77) (byte 97) (byte 110) (byte 1) (byte 1)])))))
+
+  (testing "it throws an assertion error when the input is not a byte-array"
+    (is (thrown? java.lang.AssertionError (utils/write-base64-string (byte 77))))))
+ 
