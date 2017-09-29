@@ -90,3 +90,17 @@
          (map sextet-to-base64)
          (pad)
          (apply str))))
+
+(defn fixed-XOR
+  "Takes two equal length byte-arrays and performs an XOR operation on them, returns a byte-array of equal length."
+  [bs1 bs2]
+  {:pre [(spec/valid? ::types/bytes bs1)
+         (spec/valid? ::types/bytes bs2)
+         (spec/valid? #(= (-> % first count) (-> % second count)) [bs1 bs2])]
+   :post [(spec/valid? ::types/bytes %)
+          (spec/valid? #(= (count bs1) (count bs2) (count %)) %)]}
+  (->> (map (partial bit-xor) bs1 bs2)
+       (map byte)
+       (byte-array)))
+
+(vec (fixed-XOR (byte-array [(byte -16) (byte -1)]) (byte-array [(byte 15) (byte -16)])))
