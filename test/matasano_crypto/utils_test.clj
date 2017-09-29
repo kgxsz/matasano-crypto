@@ -59,4 +59,4 @@
 
   (testing "it throws an assertion error when the input is not a byte-array"
     (is (thrown? java.lang.AssertionError (utils/write-base64-string (byte 77))))))
- 
+

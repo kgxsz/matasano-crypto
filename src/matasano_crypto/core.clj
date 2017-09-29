@@ -3,8 +3,6 @@
 
 
 (defn challenge-one
-  []
-  (let [input "49276d"
-        output "SSdt"]
-    output))
+  [s]
+  (utils/write-base64-string (utils/read-even-hex-string s)))
 
