@@ -91,6 +91,7 @@
          (pad)
          (apply str))))
 
+
 (defn fixed-XOR
   "Takes two equal length byte-arrays and performs an XOR operation on them, returns a byte-array of equal length."
   [bs1 bs2]
@@ -102,3 +103,11 @@
   (->> (map (partial bit-xor) bs1 bs2)
        (map byte)
        (byte-array)))
+
+
+(defn write-plaintext-string
+  "Takes a byte-array and returns the corresponding plaintext string."
+  [bs]
+  {:pre [(spec/valid? ::types/bytes bs)]
+   :post [(spec/valid? string? %)]}
+  (apply str (map char bs)))
