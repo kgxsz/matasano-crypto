@@ -25,3 +25,10 @@
           challenge-output "Cooking MC's like a pound of bacon"]
       (is (= challenge-output
              (core/challenge-three challenge-input))))))
+
+
+(deftest test-challenge-four
+  (testing "it satisfies the conditions outlined at: http://cryptopals.com/sets/1/challenges/4"
+    (let [challenge-output "Now that the party is jumping\n"]
+      (is (= challenge-output
+             (core/challenge-four))))))

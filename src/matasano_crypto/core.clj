@@ -14,17 +14,14 @@
 
 (defn challenge-three
   [s]
-  (let [bs (utils/read-even-hex-string s)
-        make-cipher (fn [n] (byte-array (repeat (count bs) (byte n))))
-        apply-cipher (fn [c] (utils/fixed-XOR bs c))
-        contains-unreadable-characters? (fn [d] (not-every? #(<= 32 % 126) (vec d)))
-        apply-score (fn [d] (let [s (utils/write-plaintext-string d)]
-                              {:score (utils/score-plaintext s) :value s}))]
-    (->> (range -128 128)
-         (map make-cipher)
-         (map apply-cipher)
-         (remove contains-unreadable-characters?)
-         (map apply-score)
+  (:plaintext (utils/decrypt-repeating-XOR-cipher s)))
+
+(defn challenge-four
+  []
+  (let [url "http://cryptopals.com/static/challenge-data/4.txt"
+        ciphertexts (clojure.string/split-lines (slurp url))]
+    (->> (map utils/decrypt-repeating-XOR-cipher ciphertexts)
+         (remove nil?)
          (sort-by :score >)
          (first)
-         (:value))))
+         (:plaintext))))

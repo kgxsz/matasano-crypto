@@ -140,7 +140,7 @@
   (let [bs (read-even-hex-string s)
         make-cipher (fn [n] (byte-array (repeat (count bs) (byte n))))
         apply-cipher (fn [c] (fixed-XOR bs c))
-        contains-unreadable-characters? (fn [d] (not-every? #(<= 32 % 126) (vec d)))
+        contains-unreadable-characters? (fn [d] (not-every? #(<= 0 % 127) (vec d)))
         apply-score (fn [d]
                       (let [s (write-plaintext-string d)]
                         {:score (score-plaintext s) :plaintext s}))]

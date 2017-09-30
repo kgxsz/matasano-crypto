@@ -23,5 +23,6 @@
 
 (spec/def ::socre int?)
 
-(spec/def ::decrypted-cipher (spec/or :nil nil? :map (spec/keys :req-un [::plaintext ::score])))
+(spec/def ::decrypted-cipher (spec/or :candidate-does-not-exist nil?
+                                      :candidate-exists (spec/keys :req-un [::plaintext ::score])))
 
