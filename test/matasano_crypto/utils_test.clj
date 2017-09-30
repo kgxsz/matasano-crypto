@@ -117,5 +117,8 @@
     (is (= {:plaintext "Cooking MC's like a pound of bacon" :score 5}
            (utils/decrypt-repeating-XOR-cipher "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"))))
 
+  (testing "it returns nil when there are no possible candidates"
+    (is (nil? (utils/decrypt-repeating-XOR-cipher "0e3647e8592d35514a081243582536ed3de6734059001e3f535ce6271032"))))
+
   (testing "it throws an assertion error when the input is not a string"
     (is (thrown? java.lang.AssertionError (utils/decrypt-repeating-XOR-cipher 42)))))
