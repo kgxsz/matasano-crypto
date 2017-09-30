@@ -99,3 +99,14 @@
 
   (testing "it throws an assertion error when the input is not a byte-array"
     (is (thrown? java.lang.AssertionError (utils/write-plaintext-string (byte 77))))))
+
+
+(deftest test-score-plaintext-string
+  (testing "it returns a score based on the string"
+    (is (= 1
+           (utils/score-plaintext "xyzd':\";bmmsa**")))
+    (is (= 5
+           (utils/score-plaintext "It was the best of times it was the worst of times."))))
+
+  (testing "it throws an assertion error when the input is not a string"
+    (is (thrown? java.lang.AssertionError (utils/score-plaintext 42)))))

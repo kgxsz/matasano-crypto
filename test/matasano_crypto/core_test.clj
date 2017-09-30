@@ -9,6 +9,7 @@
       (is (= challenge-output
              (core/challenge-one challenge-input))))))
 
+
 (deftest test-challenge-two
   (testing "it satisfies the conditions outlined at: http://cryptopals.com/sets/1/challenges/2"
     (let [challenge-input-a "1c0111001f010100061a024b53535009181c"
@@ -16,3 +17,11 @@
           challenge-output "746865206b696420646f6e277420706c6179"]
       (is (= challenge-output
              (core/challenge-two challenge-input-a challenge-input-b))))))
+
+
+(deftest test-challenge-three
+  (testing "it satisfies the conditions outlined at: http://cryptopals.com/sets/1/challenges/3"
+    (let [challenge-input "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
+          challenge-output "Cooking MC's like a pound of bacon"]
+      (is (= challenge-output
+             (core/challenge-three challenge-input))))))

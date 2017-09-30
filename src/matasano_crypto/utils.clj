@@ -111,3 +111,22 @@
   {:pre [(spec/valid? ::types/bytes bs)]
    :post [(spec/valid? string? %)]}
   (apply str (map char bs)))
+
+
+(defn score-plaintext
+  "Takes a plaintext string and assigns a score based on likelihood of the string being valid English.
+   The algorithm simply looks at the top 7 most frequent characters in the string and assigns a point
+   each time one of those seven characters correspond to one of the seven most frequent characters in
+   the English language."
+  [s]
+  {:pre [(spec/valid? string? s)]
+   :post [(spec/valid? int? %)]}
+  (let [frequent-char? (fn [c] (contains? #{\e \t \a \o \i \n \space} c))]
+    (->> (clojure.string/lower-case s)
+         (frequencies)
+         (sort-by second >)
+         (take 7)
+         (keys)
+         (map frequent-char?)
+         (filter true?)
+         (count))))
