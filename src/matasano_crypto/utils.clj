@@ -132,8 +132,8 @@
          (count))))
 
 
-(defn decrypt-repeating-XOR-cipher
-  "Takes a cipher that was encrypted with a repeating XOR cipher and return the most likely decryption."
+(defn decrypt-single-byte-XOR-encrypted-ciphertext
+  "Takes ciphertext that was encrypted with a single byte XOR cipher and return the most likely decryption."
   [s]
   {:pre [(spec/valid? string? s)]
    :post [(spec/valid? ::types/decrypted-cipher %)]}
@@ -151,3 +151,5 @@
          (map apply-score)
          (sort-by :score >)
          (first))))
+
+

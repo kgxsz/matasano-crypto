@@ -14,13 +14,13 @@
 
 (defn challenge-three
   [s]
-  (:plaintext (utils/decrypt-repeating-XOR-cipher s)))
+  (:plaintext (utils/decrypt-single-byte-XOR-encrypted-ciphertext s)))
 
 (defn challenge-four
   []
   (let [url "http://cryptopals.com/static/challenge-data/4.txt"
         ciphertexts (clojure.string/split-lines (slurp url))]
-    (->> (keep utils/decrypt-repeating-XOR-cipher ciphertexts)
+    (->> (keep utils/decrypt-single-byte-XOR-encrypted-ciphertext ciphertexts)
          (sort-by :score >)
          (first)
          (:plaintext))))
