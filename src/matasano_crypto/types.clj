@@ -19,3 +19,9 @@
 
 (spec/def ::base64-string (spec/and string? (partial re-matches base64-string-regex)))
 
+(spec/def ::plaintext string?)
+
+(spec/def ::socre int?)
+
+(spec/def ::decrypted-cipher (spec/keys :req-un [::plaintext ::score]))
+

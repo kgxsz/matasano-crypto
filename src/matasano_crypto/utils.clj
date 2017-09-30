@@ -130,3 +130,24 @@
          (map frequent-char?)
          (filter true?)
          (count))))
+
+
+(defn decrypt-repeating-XOR-cipher
+  "Takes a cipher that was encrypted with a repeating XOR cipher and return the most likely decryption."
+  [s]
+  {:pre [(spec/valid? string? s)]
+   :post [(spec/valid? ::types/decrypted-cipher %)]}
+  (let [bs (read-even-hex-string s)
+        make-cipher (fn [n] (byte-array (repeat (count bs) (byte n))))
+        apply-cipher (fn [c] (fixed-XOR bs c))
+        contains-unreadable-characters? (fn [d] (not-every? #(<= 32 % 126) (vec d)))
+        apply-score (fn [d]
+                      (let [s (write-plaintext-string d)]
+                        {:score (score-plaintext s) :plaintext s}))]
+    (->> (range -128 128)
+         (map make-cipher)
+         (map apply-cipher)
+         (remove contains-unreadable-characters?)
+         (map apply-score)
+         (sort-by :score >)
+         (first))))
