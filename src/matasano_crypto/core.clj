@@ -20,8 +20,7 @@
   []
   (let [url "http://cryptopals.com/static/challenge-data/4.txt"
         ciphertexts (clojure.string/split-lines (slurp url))]
-    (->> (map utils/decrypt-repeating-XOR-cipher ciphertexts)
-         (remove nil?)
+    (->> (keep utils/decrypt-repeating-XOR-cipher ciphertexts)
          (sort-by :score >)
          (first)
          (:plaintext))))
