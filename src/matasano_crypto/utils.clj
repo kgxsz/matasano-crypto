@@ -62,6 +62,38 @@
          (apply str))))
 
 
+(defn read-base64-string
+  "Takes a base64 string and returns the corresponding byte-array."
+  [s]
+  {:pre [(spec/valid? ::types/base64-string s)]
+   #_:post #_[(spec/valid? ::types/bytes %)]}
+  (let [base64-to-sextet (fn [c]
+                           (or (clojure.string/index-of
+                                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+                                c)
+                               0))
+        sextets-to-octets (fn [[sextet-a sextet-b sextet-c sextet-d]]
+                            (let [octet-a (bit-or (bit-shift-left (bit-and sextet-a 63) 2)
+                                                  (bit-shift-right sextet-b 4))
+                                  octet-b (bit-or (bit-shift-left (bit-and sextet-b 15) 4)
+                                                  (bit-shift-right (bit-and sextet-c 15) 2))
+                                  octet-c (bit-or (bit-shift-left (bit-and sextet-c 3) 6)
+                                                  (bit-and sextet-d 63))]
+                              [octet-a octet-b octet-c]))
+        unpad (fn [ns]
+               (cond
+                 (= '(\= \=) (take-last 2 s)) (drop-last 2 ns)
+                 (= \= (last s)) (butlast ns)
+                 :else ns))]
+    (->> (map base64-to-sextet s)
+         (partition-all 4)
+         (map sextets-to-octets)
+         (flatten)
+         (unpad)
+         (map byte)
+         (byte-array))))
+
+
 (defn write-base64-string
   "Takes a byte-array and returns the base64 string representation"
   [bs]

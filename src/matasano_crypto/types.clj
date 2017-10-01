@@ -19,7 +19,7 @@
 
 (spec/def ::partitioned-hex-string (spec/and string? (partial re-matches hex-string-regex) #(= 2 (count %))))
 
-(spec/def ::base64-string (spec/and string? (partial re-matches base64-string-regex)))
+(spec/def ::base64-string (spec/and string? (partial re-matches base64-string-regex) #(zero? (mod (count %) 4))))
 
 (spec/def ::non-zero-length-string (spec/and string? (partial re-matches non-zero-length-string-regex)))
 
