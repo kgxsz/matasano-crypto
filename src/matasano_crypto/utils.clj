@@ -157,7 +157,24 @@
   "Takes a key and string, encrypts the string with a repeating XOR cipher using the key."
   [k s]
   {:pre [(spec/valid? ::types/non-zero-length-string k)
-         (spec/valid? ::types/non-zero-length-string s)]}
+         (spec/valid? ::types/non-zero-length-string s)]
+   :post [(spec/valid? ::types/non-zero-length-string %)]}
   (let [bs1 (byte-array (map byte s))
         bs2 (byte-array (map byte (take (count s) (cycle k))))]
     (write-hex-string (fixed-XOR bs1 bs2))))
+
+
+(defn hamming-distance
+  "Computes the hamming distance between two strings of equal length."
+  [s1 s2]
+  {:pre [(spec/valid? ::types/non-zero-length-string s1)
+         (spec/valid? ::types/non-zero-length-string s2)
+         (spec/valid? #(= (-> % first count) (-> % second count)) [s1 s2])]
+   :post [(spec/valid? int? %)]}
+  (let [hamming-distance-by-char (fn [c1 c2]
+                                   (let [difference (byte (bit-xor (byte c1) (byte c2)))]
+                                     (->> (range 8)
+                                          (map #(bit-test difference %))
+                                          (filter true?)
+                                          (count))))]
+    (reduce + (map hamming-distance-by-char s1 s2))))

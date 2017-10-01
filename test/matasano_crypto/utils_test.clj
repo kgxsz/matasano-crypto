@@ -131,10 +131,21 @@
 
   (testing "it throws an assertion error when either of the inputs is a zero length string"
     (is (thrown? java.lang.AssertionError (utils/encrypt-with-repeating-XOR-cipher "a" "")))
-    (is (thrown? java.lang.AssertionError (utils/encrypt-with-repeating-XOR-cipher "" "a")))
-    )
+    (is (thrown? java.lang.AssertionError (utils/encrypt-with-repeating-XOR-cipher "" "a"))))
 
   (testing "it throws an assertion error when either of the inputs is not a string"
     (is (thrown? java.lang.AssertionError (utils/encrypt-with-repeating-XOR-cipher "a" 42)))
-    (is (thrown? java.lang.AssertionError (utils/encrypt-with-repeating-XOR-cipher 42 "a")))
-    ))
+    (is (thrown? java.lang.AssertionError (utils/encrypt-with-repeating-XOR-cipher 42 "a")))))
+
+
+(deftest test-hamming-distance
+  (testing "it returns the correct hamming distance given a two equal strings"
+    (is (= 37
+           (utils/hamming-distance "this is a test" "wokka wokka!!!"))))
+
+  (testing "it throws an assertion error when either of inputs are zero length strings"
+    (is (thrown? java.lang.AssertionError (utils/hamming-distance "" ""))))
+
+  (testing "it throws an assertion error when either of the inputs is not a string"
+    (is (thrown? java.lang.AssertionError (utils/hamming-distance "a" 42)))
+    (is (thrown? java.lang.AssertionError (utils/hamming-distance 42 "a")))))
