@@ -122,3 +122,19 @@
 
   (testing "it throws an assertion error when the input is not a string"
     (is (thrown? java.lang.AssertionError (utils/decrypt-single-byte-XOR-encrypted-ciphertext 42)))))
+
+
+(deftest test-encrypt-with-repeating-XOR-cipher
+  (testing "it returns the correct ciphertext given a key and plaintext"
+    (is (= "09070d0e0e"
+           (utils/encrypt-with-repeating-XOR-cipher "ab" "hello"))))
+
+  (testing "it throws an assertion error when either of the inputs is a zero length string"
+    (is (thrown? java.lang.AssertionError (utils/encrypt-with-repeating-XOR-cipher "a" "")))
+    (is (thrown? java.lang.AssertionError (utils/encrypt-with-repeating-XOR-cipher "" "a")))
+    )
+
+  (testing "it throws an assertion error when either of the inputs is not a string"
+    (is (thrown? java.lang.AssertionError (utils/encrypt-with-repeating-XOR-cipher "a" 42)))
+    (is (thrown? java.lang.AssertionError (utils/encrypt-with-repeating-XOR-cipher 42 "a")))
+    ))

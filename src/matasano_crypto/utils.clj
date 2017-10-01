@@ -153,3 +153,11 @@
          (first))))
 
 
+(defn encrypt-with-repeating-XOR-cipher
+  "Takes a key and string, encrypts the string with a repeating XOR cipher using the key."
+  [k s]
+  {:pre [(spec/valid? ::types/non-zero-length-string k)
+         (spec/valid? ::types/non-zero-length-string s)]}
+  (let [bs1 (byte-array (map byte s))
+        bs2 (byte-array (map byte (take (count s) (cycle k))))]
+    (write-hex-string (fixed-XOR bs1 bs2))))
