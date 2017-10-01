@@ -24,3 +24,7 @@
          (sort-by :score >)
          (first)
          (:plaintext))))
+
+(defn challenge-five
+  [k s]
+  (utils/encrypt-with-repeating-XOR-cipher k s))
