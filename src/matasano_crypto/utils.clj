@@ -66,7 +66,7 @@
   "Takes a base64 string and returns the corresponding byte-array."
   [s]
   {:pre [(spec/valid? ::types/base64-string s)]
-   #_:post #_[(spec/valid? ::types/bytes %)]}
+   :post [(spec/valid? ::types/bytes %)]}
   (let [base64-to-sextet (fn [c]
                            (or (clojure.string/index-of
                                 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
