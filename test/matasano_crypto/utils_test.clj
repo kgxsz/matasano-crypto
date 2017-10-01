@@ -154,13 +154,11 @@
 
 
 (deftest test-hamming-distance
-  (testing "it returns the correct hamming distance given a two equal strings"
+  (testing "it returns the correct hamming distance given two equal length byte-arrays"
     (is (= 37
-           (utils/hamming-distance "this is a test" "wokka wokka!!!"))))
+           (utils/hamming-distance (byte-array (map byte "this is a test"))
+                                   (byte-array (map byte "wokka wokka!!!"))))))
 
-  (testing "it throws an assertion error when either of inputs are zero length strings"
-    (is (thrown? java.lang.AssertionError (utils/hamming-distance "" ""))))
-
-  (testing "it throws an assertion error when either of the inputs is not a string"
-    (is (thrown? java.lang.AssertionError (utils/hamming-distance "a" 42)))
-    (is (thrown? java.lang.AssertionError (utils/hamming-distance 42 "a")))))
+  (testing "it throws an assertion error when either of the inputs is not a byte-array"
+    (is (thrown? java.lang.AssertionError (utils/hamming-distance (byte-array (map byte "42")) 42)))
+    (is (thrown? java.lang.AssertionError (utils/hamming-distance 42 (byte-array (map byte "42")))))))
