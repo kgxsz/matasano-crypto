@@ -7,6 +7,8 @@
 
 (def base64-string-regex #"^[A-Za-z0-9+/]*={0,2}$")
 
+(def non-zero-length-string-regex #"^[.\S\s]+$")
+
 (spec/def ::byte (partial instance? java.lang.Byte))
 
 (spec/def ::bytes (partial instance? (Class/forName "[B")))
@@ -19,9 +21,11 @@
 
 (spec/def ::base64-string (spec/and string? (partial re-matches base64-string-regex)))
 
-(spec/def ::plaintext string?)
+(spec/def ::non-zero-length-string (spec/and string? (partial re-matches non-zero-length-string-regex)))
 
-(spec/def ::socre int?)
+(spec/def ::plaintext ::non-zero-length-string)
+
+(spec/def ::score int?)
 
 (spec/def ::decrypted-cipher (spec/or :candidate-does-not-exist nil?
                                       :candidate-exists (spec/keys :req-un [::plaintext ::score])))
