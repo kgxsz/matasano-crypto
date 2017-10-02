@@ -30,7 +30,7 @@
 
 
 (deftest test-write-base64-string
-  (testing "it returns the corresponding base64string"
+  (testing "it returns the corresponding base64 string"
     (is (= "TWFu"
            (writers/write-base64-string (byte-array [(byte 77) (byte 97) (byte 110)])))))
 
@@ -46,6 +46,18 @@
 
   (testing "it throws an assertion error when not given a byte-array"
     (is (thrown? java.lang.AssertionError (writers/write-base64-string 42)))))
+
+
+(deftest test-write-ASCII-string
+  (testing "it returns the corresponding ASCII string"
+    (is (= "abc"
+           (writers/write-ASCII-string (byte-array [(byte 97) (byte 98) (byte 99)])))))
+
+  (testing "it throws an illegal argument exception when a byte is out of range"
+    (is (thrown? java.lang.IllegalArgumentException (writers/write-ASCII-string (byte-array [(byte -1)])))))
+
+  (testing "it throws an assertion error when not given a byte-array"
+    (is (thrown? java.lang.AssertionError (writers/write-ASCII-string 42)))))
 
 
 

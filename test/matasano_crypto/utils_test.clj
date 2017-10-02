@@ -16,18 +16,6 @@
     (is (thrown? java.lang.AssertionError (utils/fixed-XOR (byte-array [(byte -16)]) (byte-array [(byte 15) (byte -16)]))))))
 
 
-(deftest test-write-plaintext-string
-  (testing "it returns a plaintext string when given a byte-array"
-    (is (= "abc"
-           (utils/write-plaintext-string (byte-array [(byte 97) (byte 98) (byte 99)])))))
-
-  (testing "it throws an illegal argument exception when a byte is out of range"
-    (is (thrown? java.lang.IllegalArgumentException (utils/write-plaintext-string (byte-array [(byte -1)])))))
-
-  (testing "it throws an assertion error when the input is not a byte-array"
-    (is (thrown? java.lang.AssertionError (utils/write-plaintext-string (byte 77))))))
-
-
 (deftest test-score-plaintext-string
   (testing "it returns a score based on the string"
     (is (= 1

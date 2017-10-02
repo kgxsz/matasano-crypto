@@ -57,3 +57,11 @@
          (map sextet-to-base64-string)
          (pad)
          (apply str))))
+
+
+(defn write-ASCII-string
+  "Takes a byte-array and returns the corresponding ASCII string."
+  [bs]
+  {:pre [(spec/valid? ::types/bytes bs)]
+   :post [(spec/valid? string? %)]}
+  (apply str (map char bs)))

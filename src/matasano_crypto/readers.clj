@@ -58,3 +58,11 @@
          (flatten)
          (unpad)
          (byte-array))))
+
+
+(defn read-ASCII-string
+  "Takes an ASCII string and returns the corresponding byte-array."
+  [s]
+  {:pre [(spec/valid? string? s)]
+   :post [(spec/valid? ::types/bytes %)]}
+  (byte-array (map byte s)))

@@ -68,3 +68,12 @@
 
   (testing  "it throws an assertion error when given a string with invalid characters"
     (is (thrown? java.lang.AssertionError (readers/read-base64-string "TWF'")))))
+
+
+(deftest test-read-ASCII-string
+  (testing "it returns the corresponding byte-array"
+    (is (= (vec (byte-array [(byte 97) (byte 98) (byte 99)]))
+           (vec (readers/read-ASCII-string "abc")))))
+
+  (testing "it throws an assertion error when not given a string"
+    (is (thrown? java.lang.AssertionError (readers/read-ASCII-string 42)))))

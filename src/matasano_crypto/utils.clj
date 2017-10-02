@@ -16,14 +16,6 @@
        (byte-array)))
 
 
-(defn write-plaintext-string
-  "Takes a byte-array and returns the corresponding plaintext string."
-  [bs]
-  {:pre [(spec/valid? ::types/bytes bs)]
-   :post [(spec/valid? string? %)]}
-  (apply str (map char bs)))
-
-
 (defn score-plaintext
   "Takes a plaintext string and assigns a score based on likelihood of the string being valid English.
    The algorithm simply looks at the top 7 most frequent characters in the string and assigns a point
