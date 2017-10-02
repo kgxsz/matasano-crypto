@@ -29,4 +29,23 @@
     (is (thrown? java.lang.AssertionError (writers/write-hex-string 42)))))
 
 
+(deftest test-write-base64-string
+  (testing "it returns the corresponding base64string"
+    (is (= "TWFu"
+           (writers/write-base64-string (byte-array [(byte 77) (byte 97) (byte 110)])))))
+
+  (testing "it handles negative values correctly"
+    (is (= "/+Fu"
+           (writers/write-base64-string (byte-array [(byte -1) (byte -31) (byte 110)])))))
+
+  (testing "it handles padding appropriately"
+    (is (= "TWFuAQ=="
+           (writers/write-base64-string (byte-array [(byte 77) (byte 97) (byte 110) (byte 1)]))))
+    (is (= "TWFuAQE="
+           (writers/write-base64-string (byte-array [(byte 77) (byte 97) (byte 110) (byte 1) (byte 1)])))))
+
+  (testing "it throws an assertion error when not given a byte-array"
+    (is (thrown? java.lang.AssertionError (writers/write-base64-string 42)))))
+
+
 

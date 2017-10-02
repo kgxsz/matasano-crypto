@@ -3,36 +3,6 @@
             [matasano-crypto.utils :as utils]))
 
 
-(deftest test-read-base64-string
-  (testing "it returns a byte-array corresponding to the base64 string."
-    (is (= (vec (byte-array [(byte 77) (byte 97) (byte 110)]))
-           (vec (utils/read-base64-string "TWFu")))))
-
-  (testing "it reads padding appropriately"
-    (is (= (vec (byte-array [(byte 77) (byte 97) (byte 110) (byte 1)]))
-             (vec (utils/read-base64-string "TWFuAQ=="))))
-    (is (= (vec (byte-array [(byte 77) (byte 97) (byte 110) (byte 1) (byte 1)]))
-           (vec (utils/read-base64-string "TWFuAQE=")))))
-
-  (testing "it throws an assertion error when the input is not a string"
-    (is (thrown? java.lang.AssertionError (utils/read-base64-string 42)))))
-
-
-(deftest test-write-base64-string
-  (testing "it returns a base64 string when given a byte-array"
-    (is (= "TWFu"
-           (utils/write-base64-string (byte-array [(byte 77) (byte 97) (byte 110)])))))
-
-  (testing "it adds padding appropriately"
-    (is (= "TWFuAQ=="
-           (utils/write-base64-string (byte-array [(byte 77) (byte 97) (byte 110) (byte 1)]))))
-    (is (= "TWFuAQE="
-           (utils/write-base64-string (byte-array [(byte 77) (byte 97) (byte 110) (byte 1) (byte 1)])))))
-
-  (testing "it throws an assertion error when the input is not a byte-array"
-    (is (thrown? java.lang.AssertionError (utils/write-base64-string (byte 77))))))
-
-
 (deftest test-fixed-XOR
   (testing "it returns an XOR'd byte-array when given two equal length byte-arrays"
     (is (= (vec (byte-array [(byte -1) (byte 15)]))
