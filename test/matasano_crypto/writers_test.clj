@@ -14,3 +14,6 @@
 
   (testing "it throws an assertion error when not given a byte-array"
     (is (thrown? java.lang.AssertionError (writers/write-binary-string 42)))))
+
+
+

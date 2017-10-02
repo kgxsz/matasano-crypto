@@ -3,24 +3,6 @@
             [matasano-crypto.utils :as utils]))
 
 
-(deftest test-byte-to-string
-  (testing "it returns a binary string when given a byte"
-    (is (= "00101010"
-           (utils/byte-to-string (byte 42)))))
-
-  (testing "it throws an assertion error when not given a byte"
-    (is (thrown? java.lang.AssertionError (utils/byte-to-string "42")))))
-
-
-(deftest test-bytes-to-string
-  (testing "it returns a binary string when given a byte-array"
-    (is (= "0010101000000001"
-           (utils/bytes-to-string (byte-array [(byte 42) (byte 1)])))))
-
-  (testing "it throws an assertion error when not given a byte-array"
-    (is (thrown? java.lang.AssertionError (utils/bytes-to-string "42")))))
-
-
 (deftest test-read-partitioned-hex-string
   (testing "it returns a byte corresponding to the hex string"
     (is (= (byte 127) (utils/read-partitioned-hex-string "7F"))))

@@ -3,26 +3,6 @@
             [clojure.spec.alpha :as spec]))
 
 
-(defn byte-to-string
-  "Takes a byte and returns its string representation, useful for inspection and printing."
-  [b]
-  {:pre [(spec/valid? ::types/byte b)]
-   :post [(spec/valid? ::types/binary-string %)]}
-  (->> (range 8)
-       (map #(bit-test b %))
-       (reverse)
-       (map #(if % "1" "0"))
-       (apply str)))
-
-
-(defn bytes-to-string
-  "Takes a byte-array and returns its string representation, useful for inspection and printing."
-  [bs]
-  {:pre [(spec/valid? ::types/bytes bs)]
-   :post [(spec/valid? ::types/binary-string %)]}
-  (apply str (map byte-to-string bs)))
-
-
 (defn read-partitioned-hex-string
   "Takes a partitioned hex string consisting of two hex characters and returns the corresponding byte."
   [s]
