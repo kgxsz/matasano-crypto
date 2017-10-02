@@ -3,45 +3,6 @@
             [clojure.spec.alpha :as spec]))
 
 
-(defn read-partitioned-hex-string
-  "Takes a partitioned hex string consisting of two hex characters and returns the corresponding byte."
-  [s]
-  {:pre [(spec/valid? ::types/partitioned-hex-string s)]
-   :post [(spec/valid? ::types/byte %)]}
-  (let [value (Integer/parseInt s 16)
-        shifted-value (cond-> value (> value 127) (- 256))]
-    (byte shifted-value)))
-
-
-(defn read-even-hex-string
-  "Takes a hex string and returns the corresponding byte-array.
-   The hex string must have an even length."
-  [s]
-  {:pre [(spec/valid? ::types/even-hex-string s)]
-   :post [(spec/valid? ::types/bytes %)]}
-  (->> (partition 2 s)
-       (map (partial apply str))
-       (map read-partitioned-hex-string)
-       (byte-array)))
-
-
-(defn write-hex-string
-  "Takes a byte-array and returns the hex string representation"
-  [bs]
-  {:pre [(spec/valid? ::types/bytes bs)]
-   :post [(spec/valid? ::types/even-hex-string %)]}
-  (let [octet-to-quartets (fn [octet]
-                            (let [quartet-a (bit-and (bit-shift-right octet 4) 15)
-                                  quartet-b (bit-and 15 octet)]
-                              [quartet-a quartet-b]))
-        quartet-to-hex (fn [quartet] (get "0123456789abcdef" quartet))]
-    (->> (vec bs)
-         (map octet-to-quartets)
-         (flatten)
-         (map quartet-to-hex)
-         (apply str))))
-
-
 (defn read-base64-string
   "Takes a base64 string and returns the corresponding byte-array."
   [s]

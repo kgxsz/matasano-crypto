@@ -16,4 +16,17 @@
     (is (thrown? java.lang.AssertionError (writers/write-binary-string 42)))))
 
 
+(deftest test-write-hex-string
+  (testing "it returns the corresponding hex string"
+    (is (= "49276d"
+           (writers/write-hex-string (byte-array [(byte 73) (byte 39) (byte 109)])))))
+
+  (testing "it handles negative values correctly"
+    (is (= "ff276d"
+           (writers/write-hex-string (byte-array [(byte -1) (byte 39) (byte 109)])))))
+
+  (testing "it throws an assertion error when not given a byte-array"
+    (is (thrown? java.lang.AssertionError (writers/write-hex-string 42)))))
+
+
 

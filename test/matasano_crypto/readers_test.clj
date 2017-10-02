@@ -16,6 +16,32 @@
     (is (thrown? java.lang.AssertionError (readers/read-binary-string 42))))
 
   (testing "it throws an assertion error when not given a string of length not divisible by 8"
-    (is (thrown? java.lang.AssertionError (readers/read-binary-string "0000")))))
+    (is (thrown? java.lang.AssertionError (readers/read-binary-string "0000"))))
+
+  (testing "it throws an assertion error when given a string with invalid characters"
+    (is (thrown? java.lang.AssertionError (readers/read-binary-string "22222222")))))
+
+
+(deftest test-read-hex-string
+  (testing "it returns the corresponding byte-array"
+    (is (= (vec (byte-array [(byte 73) (byte 39) (byte 109)]))
+           (vec (readers/read-hex-string "49276d")))))
+
+  (testing "it handles negative values correctly"
+    (is (= (vec (byte-array [(byte -1) (byte 39) (byte 109)]))
+           (vec (readers/read-hex-string "FF276d")))))
+
+  (testing "it handles case correctly"
+    (is (= (vec (byte-array [(byte -1) (byte 39) (byte 109)]))
+           (vec (readers/read-hex-string "ff276d")))))
+
+  (testing "it throws an assertion error when not given a string"
+    (is (thrown? java.lang.AssertionError (readers/read-hex-string 42))))
+
+  (testing "it throws an assertion error when not given a string of length not divisible by 2"
+    (is (thrown? java.lang.AssertionError (readers/read-hex-string "49F"))))
+
+  (testing  "it throws an assertion error when given a string with invalid characters"
+    (is (thrown? java.lang.AssertionError (readers/read-hex-string "49G")))))
 
 

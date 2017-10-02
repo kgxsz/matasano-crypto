@@ -17,9 +17,7 @@
 
 (spec/def ::binary-string (spec/and string? (partial re-matches binary-string-regex) (divisible-by? 8)))
 
-(spec/def ::even-hex-string (spec/and string? (partial re-matches hex-string-regex) (divisible-by? 2)))
-
-(spec/def ::partitioned-hex-string (spec/and string? (partial re-matches hex-string-regex) #(= 2 (count %))))
+(spec/def ::hex-string (spec/and string? (partial re-matches hex-string-regex) (divisible-by? 2)))
 
 (spec/def ::base64-string (spec/and string? (partial re-matches base64-string-regex) (divisible-by? 4)))
 
