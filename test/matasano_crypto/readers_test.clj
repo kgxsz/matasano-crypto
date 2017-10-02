@@ -75,5 +75,8 @@
     (is (= (vec (byte-array [(byte 97) (byte 98) (byte 99)]))
            (vec (readers/read-ASCII-string "abc")))))
 
+  (testing "it throws an illegal argument exception when the string contains invalid characters"
+    (is (thrown? java.lang.IllegalArgumentException (readers/read-ASCII-string "�a"))))
+
   (testing "it throws an assertion error when not given a string"
     (is (thrown? java.lang.AssertionError (readers/read-ASCII-string 42)))))
