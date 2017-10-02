@@ -1,5 +1,7 @@
 (ns matasano-crypto.utils
-  (:require [matasano-crypto.types :as types]
+  (:require [matasano-crypto.readers :as readers]
+            [matasano-crypto.types :as types]
+            [matasano-crypto.writers :as writers]
             [clojure.spec.alpha :as spec]))
 
 
@@ -40,12 +42,12 @@
   [s]
   {:pre [(spec/valid? string? s)]
    :post [(spec/valid? ::types/decrypted-cipher %)]}
-  (let [bs (read-even-hex-string s)
+  (let [bs (readers/read-hex-string s)
         make-cipher (fn [n] (byte-array (repeat (count bs) (byte n))))
         apply-cipher (fn [c] (fixed-XOR bs c))
         contains-unreadable-characters? (fn [d] (not-every? #(<= 0 % 127) (vec d)))
         apply-score (fn [d]
-                      (let [s (write-plaintext-string d)]
+                      (let [s (writers/write-ASCII-string d)]
                         {:score (score-plaintext s) :plaintext s}))]
     (->> (range -128 128)
          (map make-cipher)
@@ -64,7 +66,7 @@
    :post [(spec/valid? ::types/non-zero-length-string %)]}
   (let [bs1 (byte-array (map byte s))
         bs2 (byte-array (map byte (take (count s) (cycle k))))]
-    (write-hex-string (fixed-XOR bs1 bs2))))
+    (writers/write-hex-string (fixed-XOR bs1 bs2))))
 
 
 (defn hamming-distance
