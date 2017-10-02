@@ -11,8 +11,6 @@
 
 (defn divisible-by? [n] #(zero? (mod (count %) n)))
 
-(spec/def ::byte (partial instance? java.lang.Byte))
-
 (spec/def ::bytes (partial instance? (Class/forName "[B")))
 
 (spec/def ::binary-string (spec/and string? (partial re-matches binary-string-regex) (divisible-by? 8)))
@@ -27,6 +25,6 @@
 
 (spec/def ::score int?)
 
-(spec/def ::decrypted-cipher (spec/or :candidate-does-not-exist nil?
-                                      :candidate-exists (spec/keys :req-un [::plaintext ::score])))
+(spec/def ::decrypted-cipher (spec/or :nothing nil?
+                                      :just (spec/keys :req-un [::plaintext ::score])))
 
