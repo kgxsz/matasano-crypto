@@ -53,8 +53,8 @@
     (is (= "abc"
            (writers/write-ASCII-string (byte-array [(byte 97) (byte 98) (byte 99)])))))
 
-  (testing "it throws an illegal argument exception when a byte is out of range"
-    (is (thrown? java.lang.IllegalArgumentException (writers/write-ASCII-string (byte-array [(byte -1)])))))
+  (testing "it returns an unknown character when an invalid byte is given"
+    (is (= "�a" (writers/write-ASCII-string (byte-array [(byte -1) (byte 97)])))))
 
   (testing "it throws an assertion error when not given a byte-array"
     (is (thrown? java.lang.AssertionError (writers/write-ASCII-string 42)))))

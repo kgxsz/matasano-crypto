@@ -64,4 +64,4 @@
   [bs]
   {:pre [(spec/valid? ::types/bytes bs)]
    :post [(spec/valid? string? %)]}
-  (apply str (map char bs)))
+  (String. bs "UTF-8"))
