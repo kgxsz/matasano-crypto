@@ -68,7 +68,7 @@
   [bs1 bs2]
   {:pre [(spec/valid? ::types/bytes bs1)
          (spec/valid? ::types/bytes bs2)
-         (spec/valid? #(= (-> % first count) (-> % second count)) [bs1 bs2])]
+         (= (count bs1) (count bs2))]
    :post [(spec/valid? int? %)]}
   (let [hamming-distance-by-byte (fn [b1 b2]
                                    (let [difference (byte (bit-xor b1 b2))]
