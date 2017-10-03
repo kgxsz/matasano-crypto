@@ -1,5 +1,6 @@
 (ns matasano-crypto.writers
   (:require [matasano-crypto.types :as types]
+            [matasano-crypto.utils :as utils]
             [clojure.spec.alpha :as spec]))
 
 
@@ -9,7 +10,7 @@
   {:pre [(spec/valid? ::types/bytes bs)]
    :post [(spec/valid? ::types/binary-string %)]}
   (let [zero-pad (fn [s] (clojure.string/replace (format "%8s" s) #" " "0"))
-        octet-to-binary-string (fn [o] (Integer/toString (cond-> o (neg? o) (+ 256)) 2))]
+        octet-to-binary-string (fn [o] (Integer/toString (utils/from-unsigned-byte o) 2))]
     (->> (map octet-to-binary-string bs)
          (map zero-pad)
          (apply str))))
@@ -21,7 +22,7 @@
   {:pre [(spec/valid? ::types/bytes bs)]
    :post [(spec/valid? ::types/hex-string %)]}
   (let [zero-pad (fn [s] (clojure.string/replace (format "%2s" s) #" " "0"))
-        octet-to-hex-string (fn [o] (Integer/toString (cond-> o (neg? o) (+ 256)) 16))]
+        octet-to-hex-string (fn [o] (Integer/toString (utils/from-unsigned-byte o) 16))]
     (->> (map octet-to-hex-string bs)
          (map zero-pad)
          (apply str))))
@@ -33,9 +34,9 @@
   {:pre [(spec/valid? ::types/bytes bs)]
    :post [(spec/valid? ::types/base64-string %)]}
   (let [octet-group-to-sextet-group (fn [os]
-                                      (let [o1 (cond-> (nth os 0) (neg? (nth os 0)) (+ 256))
-                                            o2 (cond-> (nth os 1 (byte 0)) (neg? (nth os 1 (byte 0))) (+ 256))
-                                            o3 (cond-> (nth os 2 (byte 0)) (neg? (nth os 2 (byte 0))) (+ 256))
+                                      (let [o1 (utils/from-unsigned-byte (nth os 0))
+                                            o2 (utils/from-unsigned-byte (nth os 1 (byte 0)))
+                                            o3 (utils/from-unsigned-byte (nth os 2 (byte 0)))
                                             s1 (bit-shift-right o1 2)
                                             s2 (bit-or (bit-shift-left (bit-and o1 3) 4)
                                                        (bit-shift-right o2 4))

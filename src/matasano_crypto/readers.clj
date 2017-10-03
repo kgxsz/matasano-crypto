@@ -1,5 +1,6 @@
 (ns matasano-crypto.readers
   (:require [matasano-crypto.types :as types]
+            [matasano-crypto.utils :as utils]
             [clojure.spec.alpha :as spec]))
 
 
@@ -8,9 +9,7 @@
   [s]
   {:pre [(spec/valid? ::types/binary-string s)]
    :post [(spec/valid? ::types/bytes %)]}
-  (let [chars-to-octet (fn [cs]
-                         (let [i (Integer/parseInt (apply str cs) 2)]
-                           (byte (cond-> i (> i 127) (- 256)))))]
+  (let [chars-to-octet (fn [cs] (utils/to-unsigned-byte (Integer/parseInt (apply str cs) 2)))]
     (->> (partition 8 s)
          (map chars-to-octet)
          (byte-array))))
@@ -21,9 +20,7 @@
   [s]
   {:pre [(spec/valid? ::types/hex-string s)]
    :post [(spec/valid? ::types/bytes %)]}
-  (let [chars-to-octet (fn [cs]
-                         (let [i (Integer/parseInt (apply str cs) 16)]
-                           (byte (cond-> i (> i 127) (- 256)))))]
+  (let [chars-to-octet (fn [cs] (utils/to-unsigned-byte (Integer/parseInt (apply str cs) 16)))]
     (->> (partition 2 s)
          (map chars-to-octet)
          (byte-array))))
@@ -44,9 +41,9 @@
                                                        (bit-shift-right (bit-and s3 15) 2))
                                             o3 (bit-or (bit-shift-left (bit-and s3 3) 6)
                                                        (bit-and s4 63))]
-                                        [(byte (cond-> o1 (> o1 127) (- 256)))
-                                         (byte (cond-> o2 (> o2 127) (- 256)))
-                                         (byte (cond-> o3 (> o3 127) (- 256)))]))
+                                        [(utils/to-unsigned-byte o1)
+                                         (utils/to-unsigned-byte o2)
+                                         (utils/to-unsigned-byte o3)]))
         unpad (fn [os]
                 (cond
                   (= '(\= \=) (take-last 2 s)) (drop-last 2 os)

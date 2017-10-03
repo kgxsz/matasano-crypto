@@ -11,6 +11,8 @@
 
 (defn divisible-by? [n] #(zero? (mod (count %) n)))
 
+(spec/def ::byte (partial instance? java.lang.Byte))
+
 (spec/def ::bytes (partial instance? (Class/forName "[B")))
 
 (spec/def ::binary-string (spec/and string? (partial re-matches binary-string-regex) (divisible-by? 8)))

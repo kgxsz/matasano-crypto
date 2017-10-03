@@ -5,6 +5,25 @@
             [clojure.spec.alpha :as spec]))
 
 
+(defn to-unsigned-byte
+  "Converts an integer between 0 and 255 inclusive to an unsigned byte,
+   such that two's complement is ignored."
+  [i]
+  {:pre [(spec/valid? int? i)
+         (<= 0 i 255)]
+   :post [(spec/valid? ::types/byte %)]}
+  (byte (cond-> i (> i 127) (- 256))))
+
+
+(defn from-unsigned-byte
+  "Converts a byte into an integer, ignoring two's complement."
+  [b]
+  {:pre [(spec/valid? ::types/byte b)]
+   :post [(spec/valid? int? %)
+          (<= 0 % 255)]}
+  (cond-> b (neg? b) (+ 256)))
+
+
 (defn XOR
   "Takes two equal length byte-arrays and performs a bitwise XOR operation
    on them, returns a byte-array of equal length."
