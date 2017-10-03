@@ -19,12 +19,11 @@
 
 (spec/def ::base64-string (spec/and string? (partial re-matches base64-string-regex) (divisible-by? 4)))
 
-(spec/def ::non-zero-length-string (spec/and string? (partial re-matches non-zero-length-string-regex)))
-
-(spec/def ::plaintext ::non-zero-length-string)
-
 (spec/def ::score int?)
 
-(spec/def ::decrypted-cipher (spec/or :nothing nil?
-                                      :just (spec/keys :req-un [::plaintext ::score])))
+(spec/def ::key ::bytes)
+
+(spec/def ::value ::bytes)
+
+(spec/def ::cracked-length-one-key-repeating-XOR-encryption (spec/keys :req-un [::score ::key ::value]))
 

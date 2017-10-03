@@ -1,64 +1,91 @@
 (ns matasano-crypto.utils-test
-  (:require [clojure.test :refer :all]
-            [matasano-crypto.utils :as utils]))
+  (:require [matasano-crypto.readers :as readers]
+            [matasano-crypto.utils :as utils]
+            [matasano-crypto.writers :as writers]
+            [clojure.test :refer :all]))
 
 
-(deftest test-fixed-XOR
+(deftest test-XOR
   (testing "it returns an XOR'd byte-array when given two equal length byte-arrays"
-    (is (= (vec (byte-array [(byte -1) (byte 15)]))
-           (vec (utils/fixed-XOR (byte-array [(byte -16) (byte -1)]) (byte-array [(byte 15) (byte -16)]))))))
+    (is (= (vec (readers/read-binary-string "0000000011111111"))
+           (vec (utils/XOR (readers/read-binary-string "1111111010101010")
+                           (readers/read-binary-string "1111111001010101"))))))
 
   (testing "it throws an assertion error when either of the inputs are not byte-arrays"
-    (is (thrown? java.lang.AssertionError (utils/fixed-XOR (byte-array []) 42)))
-    (is (thrown? java.lang.AssertionError (utils/fixed-XOR 42 (byte-array [])))))
+    (is (thrown? java.lang.AssertionError (utils/XOR (readers/read-hex-string "42")
+                                                     42)))
+    (is (thrown? java.lang.AssertionError (utils/XOR 42
+                                                     (readers/read-hex-string "42")))))
 
   (testing "it throws an assertion error when the input byte-arrays are not equal length"
-    (is (thrown? java.lang.AssertionError (utils/fixed-XOR (byte-array [(byte -16)]) (byte-array [(byte 15) (byte -16)]))))))
+    (is (thrown? java.lang.AssertionError (utils/XOR (readers/read-hex-string "42")
+                                                     (readers/read-hex-string "42ff"))))))
 
 
-(deftest test-score-plaintext-string
-  (testing "it returns a score based on the string"
-    (is (= 1
-           (utils/score-plaintext "xyzd':\";bmmsa**")))
-    (is (= 5
-           (utils/score-plaintext "It was the best of times it was the worst of times."))))
+(deftest test-score
+  (testing "it returns a score"
+    (is (= 0
+           (utils/score (readers/read-ASCII-string "xyzd':\";bmmsa**"))))
+    (is (= 3
+           (utils/score (readers/read-ASCII-string "hello world")))))
 
-  (testing "it throws an assertion error when the input is not a string"
-    (is (thrown? java.lang.AssertionError (utils/score-plaintext 42)))))
+  (testing "it ignores case when scoring"
+    (is (= 3
+           (utils/score (readers/read-ASCII-string "HeLlo wOrLd")))))
 
+  (testing "it gives a zero score when infrequent control characters are present"
+    (= 0
+       (utils/score (readers/read-ASCII-string "Now that the party is jumping|\n")))
+    (= 5
+       (utils/score (readers/read-ASCII-string "Now that the party is jumping\n"))))
 
-(deftest test-decrypt-single-byte-XOR-encrypted-ciphertext
-  (testing "it returns the most likely plaintext along with the score and value based on the string"
-    (is (= {:plaintext "Cooking MC's like a pound of bacon" :score 5}
-           (utils/decrypt-single-byte-XOR-encrypted-ciphertext "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"))))
+  (testing "it gives a zero score when unprintable characters are present"
+    (is (= 0
+           (utils/score (byte-array [104 101 -1 108 111 32 119 111 114 108 100])))))
 
-  (testing "it returns nil when there are no possible candidates"
-    (is (nil? (utils/decrypt-single-byte-XOR-encrypted-ciphertext "0e3647e8592d35514a081243582536ed3de6734059001e3f535ce6271032"))))
-
-  (testing "it throws an assertion error when the input is not a string"
-    (is (thrown? java.lang.AssertionError (utils/decrypt-single-byte-XOR-encrypted-ciphertext 42)))))
-
-
-(deftest test-encrypt-with-repeating-XOR-cipher
-  (testing "it returns the correct ciphertext given a key and plaintext"
-    (is (= "09070d0e0e"
-           (utils/encrypt-with-repeating-XOR-cipher "ab" "hello"))))
-
-  (testing "it throws an assertion error when either of the inputs is a zero length string"
-    (is (thrown? java.lang.AssertionError (utils/encrypt-with-repeating-XOR-cipher "a" "")))
-    (is (thrown? java.lang.AssertionError (utils/encrypt-with-repeating-XOR-cipher "" "a"))))
-
-  (testing "it throws an assertion error when either of the inputs is not a string"
-    (is (thrown? java.lang.AssertionError (utils/encrypt-with-repeating-XOR-cipher "a" 42)))
-    (is (thrown? java.lang.AssertionError (utils/encrypt-with-repeating-XOR-cipher 42 "a")))))
+  (testing "it throws an assertion error when the input is not a byte-array"
+    (is (thrown? java.lang.AssertionError (utils/score 42)))))
 
 
 (deftest test-hamming-distance
-  (testing "it returns the correct hamming distance given two equal length byte-arrays"
+  (testing "it returns the hamming distance when given two equal length byte-arrays"
     (is (= 37
-           (utils/hamming-distance (byte-array (map byte "this is a test"))
-                                   (byte-array (map byte "wokka wokka!!!"))))))
+           (utils/hamming-distance (readers/read-ASCII-string "this is a test")
+                                   (readers/read-ASCII-string "wokka wokka!!!")))))
 
   (testing "it throws an assertion error when either of the inputs is not a byte-array"
-    (is (thrown? java.lang.AssertionError (utils/hamming-distance (byte-array (map byte "42")) 42)))
-    (is (thrown? java.lang.AssertionError (utils/hamming-distance 42 (byte-array (map byte "42")))))))
+    (is (thrown? java.lang.AssertionError (utils/hamming-distance (readers/read-hex-string "42")
+                                                                  42)))
+    (is (thrown? java.lang.AssertionError (utils/hamming-distance 42
+                                                                  (readers/read-hex-string "42"))))))
+
+
+(deftest test-apply-repeating-XOR-cipher
+  (testing "it returns an encrypted byte-array given the key"
+    (is (= (vec (readers/read-ASCII-string "\t\r\rC\r\r"))
+           (vec (utils/apply-repeating-XOR-cipher (readers/read-ASCII-string "abc")
+                                                  (readers/read-ASCII-string "hello world"))))))
+
+  (testing "it returns an decrypted byte-array given the key"
+    (is (= (vec (readers/read-ASCII-string "hello world"))
+           (vec (utils/apply-repeating-XOR-cipher (readers/read-ASCII-string "abc")
+                                                  (readers/read-ASCII-string  "\t\r\rC\r\r"))))))
+
+  (testing "it throws an assertion error when either of the inputs is not a byte-array"
+    (is (thrown? java.lang.AssertionError (utils/hamming-distance (readers/read-hex-string "42")
+                                                                  42)))
+    (is (thrown? java.lang.AssertionError (utils/hamming-distance 42
+                                                                  (readers/read-hex-string "42"))))))
+
+
+(deftest test-crack-length-one-key-repeating-XOR-encryption
+  (testing "it returns the cracked key, score, and value"
+    (let [encryption (->> (readers/read-ASCII-string "Cooking MC's like a pound of bacon")
+                          (utils/apply-repeating-XOR-cipher (readers/read-ASCII-string "X")))
+          {:keys [key score value]} (utils/crack-length-one-key-repeating-XOR-encryption encryption)]
+      (is (= "X" (writers/write-ASCII-string key)))
+      (is (= 5 score))
+      (is (= "Cooking MC's like a pound of bacon" (writers/write-ASCII-string value)))))
+
+  (testing "it throws an assertion error when the input is not a byte-array"
+    (is (thrown? java.lang.AssertionError (utils/crack-length-one-key-repeating-XOR-encryption 42)))))

@@ -5,11 +5,11 @@
 
 (deftest test-read-binary-string
   (testing "it returns the corresponding byte-array"
-    (is (= (vec (byte-array [(byte 42) (byte 1)]))
+    (is (= (vec (byte-array [42 1]))
            (vec (readers/read-binary-string "0010101000000001")))))
 
   (testing "it handles negative values correctly"
-    (is (= (vec (byte-array [(byte -1) (byte 1)]))
+    (is (= (vec (byte-array [-1 1]))
            (vec (readers/read-binary-string "1111111100000001")))))
 
   (testing "it throws an assertion error when not given a string"
@@ -24,15 +24,15 @@
 
 (deftest test-read-hex-string
   (testing "it returns the corresponding byte-array"
-    (is (= (vec (byte-array [(byte 73) (byte 39) (byte 109)]))
+    (is (= (vec (byte-array [73 39 109]))
            (vec (readers/read-hex-string "49276d")))))
 
   (testing "it handles negative values correctly"
-    (is (= (vec (byte-array [(byte -1) (byte 39) (byte 109)]))
+    (is (= (vec (byte-array [-1 39 109]))
            (vec (readers/read-hex-string "FF276d")))))
 
   (testing "it handles case correctly"
-    (is (= (vec (byte-array [(byte -1) (byte 39) (byte 109)]))
+    (is (= (vec (byte-array [-1 39 109]))
            (vec (readers/read-hex-string "ff276d")))))
 
   (testing "it throws an assertion error when not given a string"
@@ -47,17 +47,17 @@
 
 (deftest test-read-base64-string
   (testing "it returns the corresponding byte-array"
-    (is (= (vec (byte-array [(byte 77) (byte 97) (byte 110)]))
+    (is (= (vec (byte-array [77 97 110]))
            (vec (readers/read-base64-string "TWFu")))))
 
   (testing "it handles negative values correctly"
-    (is (= (vec (byte-array [(byte -1) (byte -31) ( byte 110)]))
+    (is (= (vec (byte-array [-1 -31 110]))
            (vec (readers/read-base64-string "/+Fu")))))
 
   (testing "it handles padding correctly"
-    (is (= (vec (byte-array [(byte 77) (byte 97) (byte 110) (byte 1)]))
+    (is (= (vec (byte-array [77 97 110 1]))
            (vec (readers/read-base64-string "TWFuAQ=="))))
-    (is (= (vec (byte-array [(byte 77) (byte 97) (byte 110) (byte 1) (byte 1)]))
+    (is (= (vec (byte-array [77 97 110 1 1]))
            (vec (readers/read-base64-string "TWFuAQE=")))))
 
   (testing "it throws an assertion error when not given a string"
@@ -72,7 +72,7 @@
 
 (deftest test-read-ASCII-string
   (testing "it returns the corresponding byte-array"
-    (is (= (vec (byte-array [(byte 97) (byte 98) (byte 99)]))
+    (is (= (vec (byte-array [97 98 99]))
            (vec (readers/read-ASCII-string "abc")))))
 
   (testing "it throws an illegal argument exception when the string contains invalid characters"
