@@ -1,7 +1,5 @@
 (ns matasano-crypto.utils
-  (:require [matasano-crypto.readers :as readers]
-            [matasano-crypto.types :as types]
-            [matasano-crypto.writers :as writers]
+  (:require [matasano-crypto.types :as types]
             [clojure.spec.alpha :as spec]))
 
 
