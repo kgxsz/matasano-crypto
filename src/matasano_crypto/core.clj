@@ -24,7 +24,7 @@
 
 (defn challenge-four
   []
-  (->> (slurp "http://cryptopals.com/static/challenge-data/4.txt")
+  (->> (slurp "resources/challenge-four.txt")
        (clojure.string/split-lines)
        (map readers/read-hex-string)
        (map utils/crack-length-one-key-repeating-XOR-encryption)
@@ -43,8 +43,7 @@
 
 (defn challenge-six
   []
-  (let [url "http://cryptopals.com/static/challenge-data/6.txt"
-        bs (readers/read-base64-string (clojure.string/replace (slurp url) #"\n" ""))
+  (let [bs (readers/read-base64-string (clojure.string/replace (slurp "resources/challenge-six.txt") #"\n" ""))
         key-sizes (range 2 41)
         block-analysis (for [key-size key-sizes]
                          (let [blocks (take (* 4 key-size) bs)
@@ -54,23 +53,22 @@
                                block-4 (drop (* 3 key-size) blocks)
                                hamming-distance (-> (utils/hamming-distance (byte-array block-1)
                                                                             (byte-array block-2))
-                                                    (+ (utils/hamming-distance (byte-array block-3)
+                                                    #_(+ (utils/hamming-distance (byte-array block-3)
                                                                                (byte-array block-4)))
-                                                    (/ (* 2 key-size))
+                                                    (/ key-size #_(* 2 key-size))
                                                     (float))]
 
-                           (println {:key-size key-size :hamming-distance hamming-distance})
                            {:key-size key-size :hamming-distance hamming-distance}))
-        most-likey-key-size (:key-size (first (sort-by :hamming-distance block-analysis)))]
+        most-likey-key-size (sort-by :hamming-distance block-analysis)]
 
     (println most-likey-key-size)
-    (for [i (range most-likey-key-size)]
-      (->> (partition-all most-likey-key-size bs)
-           (keep #(nth % i nil))
-           (byte-array)
-           (utils/crack-length-one-key-repeating-XOR-encryption)
-           (:key)
-           (vec)))
+    (doseq [k [5 3 18 13]]
+      (println (for [i (range k)]
+                (->> (partition-all k bs)
+                     (keep #(nth % i nil))
+                     (byte-array)
+                     (utils/crack-length-one-key-repeating-XOR-encryption)
+                     (:score)))))
     ))
 
 (challenge-six)
