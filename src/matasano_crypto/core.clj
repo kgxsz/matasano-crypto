@@ -24,14 +24,14 @@
 
 (defn challenge-four
   []
-  (let [bs-groups (->> (slurp "http://cryptopals.com/static/challenge-data/4.txt")
-                       (clojure.string/split-lines)
-                       (map readers/read-hex-string))
-        cracked-encryptions (map utils/crack-length-one-key-repeating-XOR-encryption bs-groups)]
-    (->> (sort-by :score > cracked-encryptions)
-         (first)
-         (:value)
-         (writers/write-ASCII-string))))
+  (->> (slurp "http://cryptopals.com/static/challenge-data/4.txt")
+       (clojure.string/split-lines)
+       (map readers/read-hex-string)
+       (map utils/crack-length-one-key-repeating-XOR-encryption)
+       (sort-by :score >)
+       (first)
+       (:value)
+       (writers/write-ASCII-string)))
 
 
 (defn challenge-five
@@ -41,22 +41,37 @@
                                      (readers/read-ASCII-string s))))
 
 
-#_(defn challenge-six
+(defn challenge-six
   []
   (let [url "http://cryptopals.com/static/challenge-data/6.txt"
-        bs (utils/read-base64-string (clojure.string/replace (slurp url) #"\n" ""))
+        bs (readers/read-base64-string (clojure.string/replace (slurp url) #"\n" ""))
         key-sizes (range 2 41)
         block-analysis (for [key-size key-sizes]
-                         (let [blocks (take (* 2 key-size) bs)
-                               block-a (take key-size blocks)
-                               block-b (drop key-size blocks)
-                               hamming-distance (float (/ (utils/hamming-distance (byte-array block-a)
-                                                                                  (byte-array block-b))
-                                                          key-size))]
+                         (let [blocks (take (* 4 key-size) bs)
+                               block-1 (take key-size blocks)
+                               block-2 (drop key-size (take (* 2 key-size) blocks))
+                               block-3 (drop (* 2 key-size) (take (* 3 key-size) blocks))
+                               block-4 (drop (* 3 key-size) blocks)
+                               hamming-distance (-> (utils/hamming-distance (byte-array block-1)
+                                                                            (byte-array block-2))
+                                                    (+ (utils/hamming-distance (byte-array block-3)
+                                                                               (byte-array block-4)))
+                                                    (/ (* 2 key-size))
+                                                    (float))]
+
+                           (println {:key-size key-size :hamming-distance hamming-distance})
                            {:key-size key-size :hamming-distance hamming-distance}))
         most-likey-key-size (:key-size (first (sort-by :hamming-distance block-analysis)))]
-    (for [i (range most-likey-key-size)]
-      (keep #(nth % i nil) (partition-all most-likey-key-size bs)))))
 
-#_(challenge-six)
+    (println most-likey-key-size)
+    (for [i (range most-likey-key-size)]
+      (->> (partition-all most-likey-key-size bs)
+           (keep #(nth % i nil))
+           (byte-array)
+           (utils/crack-length-one-key-repeating-XOR-encryption)
+           (:key)
+           (vec)))
+    ))
+
+(challenge-six)
 
