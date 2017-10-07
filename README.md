@@ -1,4 +1,4 @@
-# Matassano Crypto
+# Matasano Crypto
 
 ##### My attempt at the [Matasano Crypto challenges](https://cryptopals.com)
 
