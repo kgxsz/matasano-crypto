@@ -41,3 +41,10 @@
           challenge-output "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"]
       (is (= challenge-output
              (core/challenge-five challenge-input-key challenge-input-plaintext))))))
+
+
+(deftest test-challenge-six
+  (testing "it satisfies the conditions outlined at: http://cryptopals.com/sets/1/challenges/6"
+    (let [challenge-output "Terminator X: Bring the noise"]
+      (is (= challenge-output
+             (core/challenge-six))))))
