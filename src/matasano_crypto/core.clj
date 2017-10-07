@@ -74,3 +74,13 @@
          (map :key)
          (map writers/write-ASCII-string)
          (apply str))))
+
+
+(defn challenge-seven
+  []
+  (let [bs (readers/read-base64-string (clojure.string/replace (slurp "resources/challenge-seven-input.txt") #"\n" ""))
+        k (readers/read-ASCII-string "YELLOW SUBMARINE")]
+    (->> (utils/decrypt-AES-in-ECB-mode k bs)
+         (writers/write-ASCII-string))))
+
+(challenge-seven)

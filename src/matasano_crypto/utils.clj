@@ -1,6 +1,9 @@
 (ns matasano-crypto.utils
   (:require [matasano-crypto.types :as types]
-            [clojure.spec.alpha :as spec]))
+            [clojure.spec.alpha :as spec])
+  (:import (java.security Key)
+           (javax.crypto Cipher)
+           (javax.crypto.spec SecretKeySpec)))
 
 
 (defn to-unsigned-byte
@@ -107,3 +110,15 @@
        (map (fn [m] (assoc m :score (score (:value m)))))
        (sort-by :score >)
        (first)))
+
+
+(defn decrypt-AES-in-ECB-mode
+  "Takes a key in the form of a byte-array, along with a byte-array to
+   decrypt, performs the AES in ECB mode decryption."
+  [k bs]
+  {:pre [(spec/valid? ::types/bytes k)
+         (spec/valid? ::types/bytes bs)]
+   :post [(spec/valid? ::types/bytes %)]}
+  (let [cipher (Cipher/getInstance "AES/ECB/PKCS5Padding")]
+    (.init cipher Cipher/DECRYPT_MODE (SecretKeySpec. k "AES"))
+    (.doFinal cipher bs)))

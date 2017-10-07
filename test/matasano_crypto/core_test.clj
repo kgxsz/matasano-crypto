@@ -48,3 +48,10 @@
     (let [challenge-output "Terminator X: Bring the noise"]
       (is (= challenge-output
              (core/challenge-six))))))
+
+
+(deftest test-challenge-seven
+  (testing "it satisfies the conditions outlined at: http://cryptopals.com/sets/1/challenges/7"
+    (let [challenge-output (slurp "resources/challenge-seven-output.txt")]
+      (is (= challenge-output
+             (core/challenge-seven))))))
