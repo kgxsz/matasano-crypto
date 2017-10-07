@@ -46,9 +46,9 @@
   [bs]
   {:pre [(spec/valid? ::types/bytes bs)]
    :post [(spec/valid? int? %)]}
-  (let [contains-unprintable-bytes? (fn [bs] (not-every? #(or (zero? %) (<= 32 % 126) (<= 7 % 13) (= 27 %)) bs))
+  (let [contains-unprintable-bytes? (fn [bs] (not-every? #(or (<= 32 % 126) (contains? #{10 27} %)) bs))
         to-lower-case (fn [b] (cond-> b (<= 65 b 90) (+ 32)))
-        frequent-byte? (fn [b] (contains? #{32 97 101 105 110 111 116} b))]
+        frequent-byte? (fn [b] (contains? #{32 97 101 105 110 111 116 115 104 114} b))]
     (if (contains-unprintable-bytes? bs)
       0
       (->> (map to-lower-case bs)

@@ -26,11 +26,11 @@
   (testing "it returns a score"
     (is (= 0
            (utils/score (readers/read-ASCII-string "xyzd':\";bmmsa**"))))
-    (is (= 3
+    (is (= 5
            (utils/score (readers/read-ASCII-string "hello world")))))
 
   (testing "it ignores case when scoring"
-    (is (= 3
+    (is (= 5
            (utils/score (readers/read-ASCII-string "HeLlo wOrLd")))))
 
   (testing "it gives a zero score when infrequent control characters are present"
