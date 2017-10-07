@@ -41,24 +41,32 @@
    written as an ASCII string, is valid English. The algorithm simply
    looks at the top seven most frequent bytes and assigns a point each
    time one of those seven bytes correspond to one of the seven most
-   frequent characters in the English language. Assigns a score of zero
-   if any of the bytes corresponds to unprintable characters."
+   frequent characters in the English language. Additionally, frequency
+   comparison is made with the aforementioned bytes, so if, for example,
+   byte 101 is expected to be more frequent than byte 116, then we assigns
+   a point if that is true. Finally, we assign a score of zero if any of
+   the bytes corresponds to unprintable characters."
   [bs]
   {:pre [(spec/valid? ::types/bytes bs)]
    :post [(spec/valid? int? %)]}
-  (let [contains-unprintable-bytes? (fn [bs] (not-every? #(or (<= 32 % 126) (contains? #{10 27} %)) bs))
+  (let [contains-unprintable-bytes? (not-every? #(or (<= 32 % 126) (contains? #{10} %)) bs)
         to-lower-case (fn [b] (cond-> b (<= 65 b 90) (+ 32)))
-        frequent-byte? (fn [b] (contains? #{32 97 101 105 110 111 116 115 104 114} b))]
-    (if (contains-unprintable-bytes? bs)
+        character-frequency-table (frequencies (map to-lower-case bs))
+        frequent-bytes-appearance-score (->> (sort-by second > character-frequency-table)
+                                             (take 7)
+                                             (keys)
+                                             (map (partial contains? #{32 97 101 105 110 111 116 115 104 114}))
+                                             (filter true?)
+                                             (count))
+        frequent-bytes-order-score (->> [[101 116] [116 97] [97 111] [111 105] [105 110] [110 32] [32 115]]
+                                        (map (fn [[a b]]
+                                               (> (get character-frequency-table a 0)
+                                                  (get character-frequency-table b 0))))
+                                        (filter true?)
+                                        (count))]
+    (if contains-unprintable-bytes?
       0
-      (->> (map to-lower-case bs)
-           (frequencies)
-           (sort-by second >)
-           (take 7)
-           (keys)
-           (map frequent-byte?)
-           (filter true?)
-           (count)))))
+      (+ frequent-bytes-appearance-score frequent-bytes-order-score))))
 
 
 (defn hamming-distance

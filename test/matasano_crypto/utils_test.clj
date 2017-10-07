@@ -24,13 +24,13 @@
 
 (deftest test-score
   (testing "it returns a score"
-    (is (= 0
+    (is (= 1
            (utils/score (readers/read-ASCII-string "xyzd':\";bmmsa**"))))
-    (is (= 5
+    (is (= 8
            (utils/score (readers/read-ASCII-string "hello world")))))
 
   (testing "it ignores case when scoring"
-    (is (= 5
+    (is (= 8
            (utils/score (readers/read-ASCII-string "HeLlo wOrLd")))))
 
   (testing "it gives a zero score when infrequent control characters are present"
@@ -84,7 +84,7 @@
                           (utils/apply-repeating-XOR-cipher (readers/read-ASCII-string "X")))
           {:keys [key score value]} (utils/crack-length-one-key-repeating-XOR-encryption encryption)]
       (is (= "X" (writers/write-ASCII-string key)))
-      (is (= 5 score))
+      (is (= 8 score))
       (is (= "Cooking MC's like a pound of bacon" (writers/write-ASCII-string value)))))
 
   (testing "it throws an assertion error when the input is not a byte-array"
