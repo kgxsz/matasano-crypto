@@ -76,3 +76,20 @@
   (let [bs (readers/read-base64-string (clojure.string/replace (slurp "resources/challenge-seven-input.txt") #"\n" ""))
         k (readers/read-ASCII-string "YELLOW SUBMARINE")]
     (writers/write-ASCII-string (utils/decrypt-AES-in-ECB-mode k bs))))
+
+
+(defn challenge-eight
+  []
+  (let [no-equal-blocks? (fn [blocks]
+                           (->> (frequencies blocks)
+                                (vals)
+                                (filter (partial < 1))
+                                (empty?)))]
+    (->> (slurp "resources/challenge-eight-input.txt")
+         (clojure.string/split-lines)
+         (map readers/read-hex-string)
+         (map (partial partition 16))
+         (remove no-equal-blocks?)
+         (map flatten)
+         (apply byte-array)
+         (writers/write-hex-string))))
