@@ -38,7 +38,7 @@
                                       (let [o1 (bit-or (bit-shift-left (bit-and s1 63) 2)
                                                        (bit-shift-right s2 4))
                                             o2 (bit-or (bit-shift-left (bit-and s2 15) 4)
-                                                       (bit-shift-right (bit-and s3 15) 2))
+                                                       (bit-shift-right (bit-and s3 63) 2))
                                             o3 (bit-or (bit-shift-left (bit-and s3 3) 6)
                                                        (bit-and s4 63))]
                                         [(utils/to-unsigned-byte o1)

@@ -48,7 +48,9 @@
 (deftest test-read-base64-string
   (testing "it returns the corresponding byte-array"
     (is (= (vec (byte-array [77 97 110]))
-           (vec (readers/read-base64-string "TWFu")))))
+           (vec (readers/read-base64-string "TWFu"))))
+    (is (= (vec (byte-array [77 11 15]))
+           (vec (readers/read-base64-string "TQsP")))))
 
   (testing "it handles negative values correctly"
     (is (= (vec (byte-array [-1 -31 110]))
