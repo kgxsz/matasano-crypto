@@ -40,3 +40,25 @@
    (utils/apply-repeating-XOR-cipher (readers/read-ASCII-string k)
                                      (readers/read-ASCII-string s))))
 
+
+(defn challenge-six
+  []
+  (let [bs (readers/read-base64-string (clojure.string/replace (slurp "resources/challenge-six.txt") #"\n" ""))
+        key-sizes (range 2 41)
+        hamming-distances (for [key-size key-sizes]
+                            (let [blocks (map byte-array (partition key-size bs))
+                                  average #(/ % (* 2 (count blocks)))
+                                  normalise #(float (/ % key-size))]
+                              {:key-size key-size
+                               :hamming-distance (->> (interleave blocks blocks)
+                                                      (rest)
+                                                      (partition 2)
+                                                      (map (partial apply utils/hamming-distance))
+                                                      (reduce +)
+                                                      (average)
+                                                      (normalise))}))
+        most-likely-key-size (:key-size (first (sort-by :hamming-distance hamming-distances)))]
+
+    most-likely-key-size
+
+    ))
