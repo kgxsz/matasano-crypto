@@ -1,8 +1,7 @@
 (ns matasano-crypto.utils
   (:require [matasano-crypto.types :as types]
             [clojure.spec.alpha :as spec])
-  (:import (java.security Key)
-           (javax.crypto Cipher)
+  (:import (javax.crypto Cipher)
            (javax.crypto.spec SecretKeySpec)))
 
 
