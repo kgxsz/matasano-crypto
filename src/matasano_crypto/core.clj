@@ -24,7 +24,7 @@
 
 (defn challenge-four
   []
-  (->> (slurp "resources/challenge-four.txt")
+  (->> (slurp "resources/challenge-four-input.txt")
        (clojure.string/split-lines)
        (map readers/read-hex-string)
        (map utils/crack-length-one-key-repeating-XOR-encryption)
@@ -43,10 +43,8 @@
 
 (defn challenge-six
   []
-  (let [bs (readers/read-base64-string (clojure.string/replace (slurp "resources/challenge-six.txt") #"\n" ""))
-
+  (let [bs (readers/read-base64-string (clojure.string/replace (slurp "resources/challenge-six-input.txt") #"\n" ""))
         key-sizes (range 2 41)
-
         normalised-hamming-distances (for [key-size key-sizes]
                                        (let [blocks (map byte-array (partition key-size bs))
                                              average #(/ % (* 2 (count blocks)))
@@ -59,28 +57,22 @@
                                                                             (reduce +)
                                                                             (average)
                                                                             (normalise))}))
-
         most-likely-key-size (->> normalised-hamming-distances
                                   (sort-by :normalised-hamming-distance)
                                   (first)
                                   (:key-size))
-
         transposed-blocks (for [i (range most-likely-key-size)]
                             (->> (partition-all most-likely-key-size bs)
                                  (keep #(nth % i nil))
-                                 (byte-array)))]
-
-    (->> (map utils/crack-length-one-key-repeating-XOR-encryption transposed-blocks)
-         (map :key)
-         (map writers/write-ASCII-string)
-         (apply str))))
+                                 (byte-array)))
+        key (->> (map utils/crack-length-one-key-repeating-XOR-encryption transposed-blocks)
+                 (map (comp first vec :key))
+                 (byte-array))]
+    (writers/write-ASCII-string (utils/apply-repeating-XOR-cipher key bs))))
 
 
 (defn challenge-seven
   []
   (let [bs (readers/read-base64-string (clojure.string/replace (slurp "resources/challenge-seven-input.txt") #"\n" ""))
         k (readers/read-ASCII-string "YELLOW SUBMARINE")]
-    (->> (utils/decrypt-AES-in-ECB-mode k bs)
-         (writers/write-ASCII-string))))
-
-(challenge-seven)
+    (writers/write-ASCII-string (utils/decrypt-AES-in-ECB-mode k bs))))

@@ -45,7 +45,7 @@
 
 (deftest test-challenge-six
   (testing "it satisfies the conditions outlined at: http://cryptopals.com/sets/1/challenges/6"
-    (let [challenge-output "Terminator X: Bring the noise"]
+    (let [challenge-output (slurp "resources/challenge-six-output.txt")]
       (is (= challenge-output
              (core/challenge-six))))))
 
